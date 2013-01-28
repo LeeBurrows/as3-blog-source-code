@@ -1,0 +1,48 @@
+<languageVersion : 1.0;>
+
+kernel pbDemo2
+<   namespace : "com.leeburrows";
+    vendor : "Lee Burrows";
+    version : 1;
+>
+{
+    //define input and output
+
+    //define the input source - here we expect a four channel image (R,G,B and Alpha)
+    input image4 src;
+    //define the output variable for result of evaluatePixel
+    output pixel4 dst;
+    
+    //define parameters
+    
+    //name: xval, type: float, range: 0 to 1, default:0.0
+    parameter float xval <
+        minValue: float(0.0);
+        maxValue: float(1.0);
+        defaultValue: float(0.0);
+    >;
+    //name: yval, type: float, range: 0 to 1, default:0.0
+    parameter float yval <
+        minValue: float(0.0);
+        maxValue: float(1.0);
+        defaultValue: float(0.0);
+    >;
+
+    //define constants
+    
+    //radians in 360 degrees
+    const float RADS = 2.0 * 3.14159265;
+
+    //main function
+    void evaluatePixel()
+    {
+        //get current position
+        float2 pos = outCoord();
+        //add offset to x coordinate
+        pos.x += 30.0*xval*sin(RADS/50.0*pos.x);
+        //add offset to y coordinate
+        pos.y += 30.0*yval*sin(RADS/50.0*pos.y);
+        //set pixel at current postion to the value of pixel at pos
+        dst = sampleNearest(src,pos);
+    }
+}

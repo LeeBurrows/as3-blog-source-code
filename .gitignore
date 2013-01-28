@@ -1,0 +1,18 @@
+# Flash Builder
+
+bin/
+bin-debug/
+bin-release/
+html-template/
+.settings/
+.fxpTemp/
+.metadata/
+*.project
+*.actionScriptProperties
+*.flexLibProperties
+
+
+# Windows
+
+Thumbs.db
+Desktop.ini

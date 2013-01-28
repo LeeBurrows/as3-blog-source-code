@@ -1,0 +1,36 @@
+<languageVersion : 1.0;>
+
+kernel pbDemo3
+<   namespace : "com.leeburrows";
+    vendor : "Lee Burrows";
+    version : 1;
+>
+{
+    //define input and output
+
+    //define the input sources
+    input image4 src1;
+    input image4 src2;
+    //define the output variable for result of evaluatePixel
+    output pixel4 dst;
+    
+    //define parameters
+    
+    //name: xval, type: float, range: 0 to 1, default:0.0
+    parameter float xval <
+        minValue: float(0.0);
+        maxValue: float(1.0);
+        defaultValue: float(0.0);
+    >;
+
+    //main function
+    void evaluatePixel()
+    {
+        //get pixel from source 1
+        pixel4 p1 = sampleNearest(src1, outCoord());
+        //get pixel from source 2
+        pixel4 p2 = sampleNearest(src2, outCoord());
+        //interpolate between the 2 values
+        dst = mix(p1, p2, xval);
+    }
+}

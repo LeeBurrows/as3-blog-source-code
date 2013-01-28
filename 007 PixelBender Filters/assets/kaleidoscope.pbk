@@ -1,0 +1,83 @@
+<languageVersion : 1.0;>
+
+kernel NewFilter
+<   namespace : "com.leeburrows";
+    vendor : "Lee Burrows";
+    version : 1;
+    description : "your description";
+>
+{
+    input image4 src;
+    output pixel4 dst;
+
+    //constants
+
+    const float RADS = 2.0 * 3.14159265;
+
+    //input parameters
+
+    parameter float originX
+    <
+        minValue: float(0.0);
+        maxValue: float(1000.0);
+        defaultValue: float(288.0);
+    >;
+    parameter float originY
+    <
+        minValue: float(0.0);
+        maxValue: float(1000.0);
+        defaultValue: float(192.0);
+    >;
+
+    parameter int sections
+    <
+        minValue: 1;
+        maxValue: 100;
+        defaultValue: 3;
+    >;
+    
+    parameter float reflectionAngle
+    <
+        minValue: 0.0;
+        maxValue: RADS;
+        defaultValue: 0.0;
+    >;
+    
+    parameter float maxRadius
+    <
+        minValue: 0.0;
+        maxValue: 1000.0;
+        defaultValue: 150.0;
+    >;
+
+    //code
+
+    void evaluatePixel()
+    {
+        //create origin from seperate x+y params (get an error when passing origin as float2 param)
+        float2 originPosition = float2(originX, originY)+1.0;
+        //get coords relative to origin point
+        float2 thisPos = outCoord()-originPosition;
+        //calculate angle to origin
+        float angle = atan(-thisPos.y, thisPos.x)+(RADS/2.0);
+        //calculate distance to origin
+        float dist = length(thisPos);
+        //subtract reflection angle to get angular distance from reflection angle
+        angle -= reflectionAngle;
+        //calculate angular size of section
+        float sectionSize = RADS/float(sections*2);
+        //calculate angular size of section and its reflection
+        float sectionSize2 = sectionSize*2.0;
+        //calculate angle to copy from (add RADS to avoid negative angle messing up mod calc)
+        angle = mod(angle+RADS, sectionSize2);
+        //if angle is in reflected zone then mirror it
+        if (angle>=sectionSize) angle = sectionSize-(angle-sectionSize);
+        //add reflection angle back in to get actual angle
+        angle += reflectionAngle;
+        //calculate coords to copy from
+        float2 copyPos = float2(sin(angle), cos(angle))*dist;
+        //get pixel details from copy coords or blank if outside range
+        dst = pixel4(0.0);
+        if (dist<maxRadius) dst = sampleLinear(src, copyPos+originPosition);
+    }
+}
