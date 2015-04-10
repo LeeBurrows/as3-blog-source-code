@@ -4,7 +4,7 @@ blog-source-code
 assorted ActionScript 3 classes
 -------------------------------
 
-Source code and assets for the posts on my [blog](http://blog.leeburrows.com)
+Source code and assets for the posts on my (now defunct) blog
 
 + _Lets make some noise:_ adding Perlin Noise to bitmaps.
 + _Bitmap basics:_ how to use the Bitmap class.
